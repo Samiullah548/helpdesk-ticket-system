@@ -1,4 +1,4 @@
-import mongoose, { Schema, trusted } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -18,6 +18,12 @@ const userSchema = new Schema(
             required: true,
             trim: true,
             index: true
+        },
+
+        role: {
+            type: String,
+            enum: ["user", "admin"],
+            default: "user"
         },
 
         email: {
@@ -57,10 +63,11 @@ userSchema.methods.isPasswordCorrect = async function (password){
 userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
-            _id: this._id,
-            _email: this._email,
-            _username: this._username,
-            _fullname: this._fullname,
+            _id: this.id,
+            _email: this.email,
+            _username: this.username,
+            _fullname: this.fullname,
+            _role: this.role
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
