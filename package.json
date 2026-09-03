@@ -16,8 +16,8 @@
   "author": "Samiullah Khan",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+    "scripts": {
+    "dev": "node index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
