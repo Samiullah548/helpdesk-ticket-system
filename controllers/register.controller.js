@@ -56,12 +56,17 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Invalid password")
     }
 
-    user.accessToken = jwt.sign({ id: user.$or({ email }, { username }) }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY })
+    const accessToken = user.generateAccessToken()
+    const refreshToken = user.generateRefreshToken()
 
-    user.refreshToken = jwt.sign({ id: user.$or({ email }, { username }) }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRY })
+    user.refreshToken = refreshToken
+    await user.save()  // ✅ Database mein save karo
 
 
-    res.send(200).json(new ApiResponse(200, { accessToken: user.accessToken, refreshToken: user.refreshToken }, "User logged in successfully"))
+    res.status(200).json(new ApiResponse(200, {
+        accessToken,
+        refreshToken
+    }, "User logged in successfully"))
 })
 
 export { registerUser, loginUser }
