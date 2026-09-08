@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import router from "./routes/user.routes.js";
+import userRouter from "./routes/user.routes.js";
+import ticketRouter from "./routes/ticket.routes.js";
 import mongoose from "mongoose";
 
 
@@ -18,4 +19,5 @@ const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
-app.use("/api/v1/users", router);
+app.use("/api/v1/users", userRouter);
+app.use("/api/tickets", ticketRouter)
