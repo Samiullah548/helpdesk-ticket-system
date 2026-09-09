@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const createUser = await User.findById(newUser.id).select("-password -refreshToken")
 
-    return res.status(201).json(new ApiResponse(200, createUser, "User created successfully"));
+    return res.status(201).json(new ApiResponse(201, createUser, "User created successfully"));
 })
 
 const loginUser = asyncHandler(async (req, res) => {

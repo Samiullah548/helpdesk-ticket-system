@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
-import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
-import User from "../models/user.model.js"; // Make sure to import the User model
+import User from "../models/user.model.js";
 
 export const authMiddleware = asyncHandler(async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -16,10 +14,18 @@ export const authMiddleware = asyncHandler(async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        const user = await User.findById(decoded.id).select("-password -refreshToken");
+        const user = await User.findById(decoded._id).select("-password -refreshToken");
+
+        if (!user) {
+            throw new ApiError(401, "Unauthorized: User not found");
+        }
+
         req.user = user;
         next();
     } catch (error) {
+        if (error instanceof ApiError) {
+            throw error;
+        }
         throw new ApiError(401, "Unauthorized: Invalid token");
     }
-})
+});

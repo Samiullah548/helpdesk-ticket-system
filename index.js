@@ -1,23 +1,19 @@
-import express from "express";
 import dotenv from "dotenv";
-import userRouter from "./routes/user.routes.js";
-import ticketRouter from "./routes/ticket.routes.js";
 import mongoose from "mongoose";
+import app from "./app.js";
 
-
-const app = express();
 dotenv.config();
-app.use(express.json());
 
-// Database connection 
+const PORT = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log("Database connected successfully"))
-.catch((err) => console.log("Database connection error: ", err));
-const PORT = process.env.PORT || 3000
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-})
-app.use("/api/v1/users", userRouter);
-app.use("/api/tickets", ticketRouter)
+    .then(() => {
+        console.log("Database connected successfully");
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.log("Database connection error: ", err);
+        process.exit(1);
+    });

@@ -1,10 +1,11 @@
 import express from "express";
-import { createTicket } from "../controllers/ticket.controller.js";
+import { createTicket, getMyTickets, getTicketById } from "../controllers/ticket.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/tickets", authMiddleware, createTicket);
+router.post("/", authMiddleware, createTicket);
+router.get("/mine", authMiddleware, getMyTickets);
+router.get("/:id", authMiddleware, getTicketById);
 
-export const ticketRouter = router;
 export default router;
