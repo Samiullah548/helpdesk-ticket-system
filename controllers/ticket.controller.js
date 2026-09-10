@@ -61,6 +61,20 @@ const updateTicket = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, ticket, "Your Ticket updated successfully"));
 })
 
+const deleteTicket = asyncHandler(async (req, res) => {
+    const ticketId = req.params.id 
+    const ticket = await Ticket.findById(ticketId)
+    if (!ticket) {
+        throw new ApiError(404, "Ticket not found")
+    }
+    if (ticket.createdBy.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "Only ticket owner can delete this ticket")
+    }
+    await Ticket.findByIdAndDelete(ticketId)
+
+    return res.status(200).json(new ApiResponse(200, ticket, "Ticket deleted successfully"))
+})
+
 export {
     createTicket,
     getMyTickets,

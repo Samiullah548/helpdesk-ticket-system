@@ -8,5 +8,6 @@ router.post("/", authMiddleware, createTicket);
 router.get("/mine", authMiddleware, getMyTickets);
 router.get("/:id", authMiddleware, getTicketById);
 router.put("/:id", authMiddleware, updateTicket);
+router.delete("/:id", authMiddleware, deleteTicket)
 
 export default router;
