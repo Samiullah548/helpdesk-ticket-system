@@ -50,6 +50,46 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     }
 })
 
+document.getElementById("loginForm").addEventListeners("submit", async (e) => {
+    e.preventDefault()
+
+    document.getElementById("email").value
+    document.getElementById("password").value
+
+    if (!email || !password) {
+        showError("All fields required")
+        return
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/users/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        })
+        
+        const data = await response.json()
+        
+        if (!response.ok) {
+            showError(data.message || "Login failed")
+            return
+        }
+        
+        const accessToken = data.data.accessToken
+        const refreshToken = data.data.refreshToken
+
+        localStorage.setItem("accessToken", accessToken)
+        localStorage.setItem("refreshToken", refreshToken)
+
+        showSuccess("Login successfull! Redirecting....")
+        setTimeout(() => {
+            window.location.href = "dashboard.html"
+        }, 1500)
+    } catch (error) {
+        showError("Error:" + error.message)
+    }
+})
+
 function showError(message) {
     const errorDiv = document.getElementById("errorMessage")
     errorDiv.textContent = message

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets - Helpdesk System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <h2 class="navbar-brand">Helpdesk System</h2>
+            <div class="navbar-menu">
+                <span id="userName" class="user-name"></span>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>My Tickets</h1>
+            <button class="btn-primary" onclick="window.location.href='create-ticket.html'">
+                + Create New Ticket
+            </button>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div id="ticketsContainer" class="tickets-grid">
+            <!-- Tickets will be loaded here -->
+        </div>
+
+        <div id="noTickets" class="no-tickets" style="display: none;">
+            <p>No tickets found. Create one to get started!</p>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

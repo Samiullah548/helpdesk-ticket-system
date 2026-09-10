@@ -3,39 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Helpdesk Ticket System</title>
+    <title>Login - Helpdesk Ticket System</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="auth-wrapper">
             <div class="auth-card">
-                <h1>Create Account</h1>
-                <p class="subtitle">Join Helpdesk Ticket System</p>
+                <h1>Welcome Back</h1>
+                <p class="subtitle">Login to Helpdesk System</p>
 
-                <form id="registerForm" class="auth-form">
-                    <div class="form-group">
-                        <label for="fullname">Full Name</label>
-                        <input 
-                            type="text" 
-                            id="fullname" 
-                            name="fullname" 
-                            placeholder="Enter your full name"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            placeholder="Choose a username"
-                            required
-                        >
-                    </div>
-
+                <form id="loginForm" class="auth-form">
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input 
@@ -53,16 +31,16 @@
                             type="password" 
                             id="password" 
                             name="password" 
-                            placeholder="Minimum 8 characters"
+                            placeholder="Enter your password"
                             required
                         >
                     </div>
 
-                    <button type="submit" class="btn-primary">Register</button>
+                    <button type="submit" class="btn-primary">Login</button>
 
                     <p class="form-footer">
-                        Already have an account? 
-                        <a href="login.html">Login here</a>
+                        Don't have an account? 
+                        <a href="register.html">Register here</a>
                     </p>
                 </form>
 
