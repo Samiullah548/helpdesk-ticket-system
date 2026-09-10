@@ -79,5 +79,6 @@ export {
     createTicket,
     getMyTickets,
     updateTicket,
-    getTicketById
+    getTicketById,
+    deleteTicket
 }
