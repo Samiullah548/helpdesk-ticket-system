@@ -37,8 +37,33 @@ const getTicketById = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, ticket, "Ticket retrieved successfully"));
 })
 
+const updateTicket = asyncHandler(async (req, res) => {
+    const ticketId = req.params.id
+    const { title, description, category, priority } = req.body;
+
+    if (!title || !description || !category || !priority) {
+        throw new ApiError(400, "All fields are required");
+    }
+    const ticket = await Ticket.findById(ticketId)
+
+    if (!ticket) {
+        throw new ApiError(404, "Ticket not found");
+    }
+    if (ticket.createdBy.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "Only ticket owner can update this ticket");
+    }
+    if (title) ticket.title = title;
+    if (description) ticket.description = description;
+    if (catagory) ticket.catagory = category;
+    if (priority) ticket.priority = priority;
+
+    await ticket.save()
+    return res.status(200).json(new ApiResponse(200, ticket, "Your Ticket updated successfully"));
+})
+
 export {
     createTicket,
     getMyTickets,
+    updateTicket,
     getTicketById
 }
