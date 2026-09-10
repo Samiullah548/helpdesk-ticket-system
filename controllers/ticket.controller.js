@@ -75,10 +75,29 @@ const deleteTicket = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, ticket, "Ticket deleted successfully"))
 })
 
+const updateTicketStatus = asyncHandler(async (req, res) => {
+    const ticketId = req.params.id
+    const { status } = req.body
+    const validStatuses = ["Open", "In Progress", "Resolved", "Closed"]
+    if (!status || !validStatuses.includes(status)) {
+        throw new ApiError(400, "Invalid status. Valid options: Open, In Progress, Resolved, Closed")
+    }
+    const ticket = await Ticket.findById(ticketId)
+    if (!ticket) {
+        throw new ApiError(404, "Ticket not found")
+    }
+
+    ticket.status = status
+    await ticket.save()
+
+    return res.status(200).json(new ApiResponse(200, ticket, "Ticket status updated successfully"))
+})
+
 export {
     createTicket,
     getMyTickets,
     updateTicket,
     getTicketById,
-    deleteTicket
+    deleteTicket,
+    updateTicketStatus
 }
