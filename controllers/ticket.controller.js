@@ -54,7 +54,7 @@ const updateTicket = asyncHandler(async (req, res) => {
     }
     if (title) ticket.title = title;
     if (description) ticket.description = description;
-    if (catagory) ticket.catagory = category;
+    if (category) ticket.category = category;
     if (priority) ticket.priority = priority;
 
     await ticket.save()

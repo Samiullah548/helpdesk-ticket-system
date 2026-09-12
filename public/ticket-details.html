@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Details - Helpdesk System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <h2 class="navbar-brand">Helpdesk System</h2>
+            <div class="navbar-menu">
+                <span id="userName" class="user-name"></span>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="ticket-details-wrapper">
+            <div class="back-button">
+                <a href="dashboard.html">← Back to Dashboard</a>
+            </div>
+
+            <div id="ticketDetailsContainer" class="ticket-details-card">
+                <!-- Ticket details will load here -->
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <script src="ticket-details.js"></script>
+</body>
+</html>

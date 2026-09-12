@@ -1,14 +1,8 @@
-import cors from "cors"
-
-app.use(cors({
-    origin: "*",  // Testing ke liye, production mein specific URL
-    credentials: true
-}))
-
-const API_BASE_URL = "http://localhost:3000/api/v1"
+const API_BASE_URL = "/api/v1"
 
 // Register form submit
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
+const registerForm = document.getElementById("registerForm")
+registerForm?.addEventListener("submit", async (e) => {
     e.preventDefault()
     
     const fullname = document.getElementById("fullname").value
@@ -50,11 +44,12 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     }
 })
 
-document.getElementById("loginForm").addEventListeners("submit", async (e) => {
+const loginForm = document.getElementById("loginForm")
+loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault()
 
-    document.getElementById("email").value
-    document.getElementById("password").value
+    const email = document.getElementById("email").value
+    const password = document.getElementById("password").value
 
     if (!email || !password) {
         showError("All fields required")
@@ -62,7 +57,7 @@ document.getElementById("loginForm").addEventListeners("submit", async (e) => {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/users/login`, {
+        const response = await fetch(`${API_BASE_URL}/users/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -77,6 +72,7 @@ document.getElementById("loginForm").addEventListeners("submit", async (e) => {
         
         const accessToken = data.data.accessToken
         const refreshToken = data.data.refreshToken
+        localStorage.setItem("userName", data.data.user?.fullname || email)
 
         localStorage.setItem("accessToken", accessToken)
         localStorage.setItem("refreshToken", refreshToken)
