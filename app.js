@@ -12,15 +12,30 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const allowedOrigins = (
+  process.env.CORS_ORIGINS ||
+  "https://helpdesk-ticket-system-umg4.onrender.com,http://localhost:3000"
+)
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error("Origin is not allowed by CORS"));
+  },
+  credentials: true,
+};
+
 app.use(
-  cors({
-    origin: ["https://helpdesk-desk-ticket.netlify.app/register",
-        "https://helpdesk-backend.onrender.com/api/v1",
-        "http://localhost:3000",
-            "https://helpdesk-ticket-system-umg4.onrender.com/"],
-    credentials: true,
-  })
+  cors(corsOptions)
 );
+app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
