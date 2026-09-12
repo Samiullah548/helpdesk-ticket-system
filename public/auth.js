@@ -3,7 +3,7 @@ const API_BASE_URL = "https://helpdesk-backend.onrender.com/api/v1"
 
 app.use(cors({
     origin: [
-        "http://localhost:3000",
+        // "http://localhost:3000",
         "https://helpdesk-desk-ticket.netlify.app"
     ],
     credentials: true
