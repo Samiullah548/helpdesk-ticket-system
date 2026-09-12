@@ -1,4 +1,4 @@
-import cors from "cors"
+import cors from "cors";
 const API_BASE_URL = "https://helpdesk-backend.onrender.com/api/v1"
 
 app.use(cors({
