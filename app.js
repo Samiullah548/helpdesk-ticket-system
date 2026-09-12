@@ -15,6 +15,7 @@ const __dirname = path.dirname(__filename);
 app.use(
   cors({
     origin: ["https://helpdesk-desk-ticket.netlify.app/register",
+        "https://helpdesk-backend.onrender.com/api/v1",
         "http://localhost:3000",
             "https://helpdesk-ticket-system-umg4.onrender.com/"],
     credentials: true,
