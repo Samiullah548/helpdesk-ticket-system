@@ -1,4 +1,4 @@
-const API_BASE_URL = "/api/v1"
+const API_BASE_URL = "https://helpdesk-ticket-system-umg4.onrender.com/api/v1"
 
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("accessToken")
