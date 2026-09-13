@@ -1,5 +1,3 @@
-# helpdesk-ticket-system 
-
 # Helpdesk Ticket System
 
 ## ✅ COMPLETE & FULLY FUNCTIONAL
