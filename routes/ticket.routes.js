@@ -11,4 +11,4 @@ router.put("/:id", authMiddleware, updateTicket);
 router.delete("/:id", authMiddleware, deleteTicket)
 router.put("/:id/status", authMiddleware,updateTicketStatus)
 
-export default router;
+export {router as ticketRoutes}
