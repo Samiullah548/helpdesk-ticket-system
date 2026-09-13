@@ -1,13 +1,27 @@
-const API_BASE_URL = "http://localhost:3000/api/v1"
+const API_BASE_URL = "/api/v1"
+
+function clearMessages() {
+    const errorDiv = document.getElementById("errorMessage")
+    const successDiv = document.getElementById("successMessage")
+    if (errorDiv) {
+        errorDiv.textContent = ""
+        errorDiv.classList.remove("show")
+    }
+    if (successDiv) {
+        successDiv.textContent = ""
+        successDiv.classList.remove("show")
+    }
+}
 
 // Register form submit
 const registerForm = document.getElementById("registerForm")
 registerForm?.addEventListener("submit", async (e) => {
     e.preventDefault()
+    clearMessages()
     
-    const fullname = document.getElementById("fullname").value
-    const username = document.getElementById("username").value
-    const email = document.getElementById("email").value
+    const fullname = document.getElementById("fullname").value.trim()
+    const username = document.getElementById("username").value.trim()
+    const email = document.getElementById("email").value.trim()
     const password = document.getElementById("password").value
     
     // Validation
@@ -38,7 +52,7 @@ registerForm?.addEventListener("submit", async (e) => {
         showSuccess("Registration successful! Redirecting to login...")
         setTimeout(() => {
             window.location.href = "login.html"
-        }, 2000)
+        }, 1500)
     } catch (error) {
         showError("Error: " + error.message)
     }
@@ -47,8 +61,9 @@ registerForm?.addEventListener("submit", async (e) => {
 const loginForm = document.getElementById("loginForm")
 loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault()
+    clearMessages()
 
-    const email = document.getElementById("email").value
+    const email = document.getElementById("email").value.trim()
     const password = document.getElementById("password").value
 
     if (!email || !password) {
@@ -72,28 +87,44 @@ loginForm?.addEventListener("submit", async (e) => {
         
         const accessToken = data.data.accessToken
         const refreshToken = data.data.refreshToken
-        localStorage.setItem("userName", data.data.user?.fullname || email)
-
+        const displayName = data.data?.user?.fullname || data.data?.user?.username || email
+        
+        localStorage.setItem("userName", displayName)
+        localStorage.setItem("userRole", data.data?.user?.role || "user")
         localStorage.setItem("accessToken", accessToken)
         localStorage.setItem("refreshToken", refreshToken)
 
-        showSuccess("Login successfull! Redirecting....")
+        showSuccess("Login successful! Redirecting....")
         setTimeout(() => {
             window.location.href = "dashboard.html"
-        }, 1500)
+        }, 1000)
     } catch (error) {
-        showError("Error:" + error.message)
+        showError("Error: " + error.message)
     }
 })
 
 function showError(message) {
     const errorDiv = document.getElementById("errorMessage")
-    errorDiv.textContent = message
-    errorDiv.classList.add("show")
+    const successDiv = document.getElementById("successMessage")
+    if (successDiv) {
+        successDiv.textContent = ""
+        successDiv.classList.remove("show")
+    }
+    if (errorDiv) {
+        errorDiv.textContent = message
+        errorDiv.classList.add("show")
+    }
 }
 
 function showSuccess(message) {
+    const errorDiv = document.getElementById("errorMessage")
     const successDiv = document.getElementById("successMessage")
-    successDiv.textContent = message
-    successDiv.classList.add("show")
+    if (errorDiv) {
+        errorDiv.textContent = ""
+        errorDiv.classList.remove("show")
+    }
+    if (successDiv) {
+        successDiv.textContent = message
+        successDiv.classList.add("show")
+    }
 }

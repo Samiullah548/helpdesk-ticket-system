@@ -12,60 +12,65 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
-    const existedUser = await User.findOne(
-        {
-            $or: [{ email }, { username }]
-        }
-    )
+    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedUsername = username.toLowerCase().trim();
+
+    const existedUser = await User.findOne({
+        $or: [{ email: normalizedEmail }, { username: normalizedUsername }]
+    });
 
     if (existedUser) {
-        throw new ApiError(409, "User already exists")
+        throw new ApiError(409, "User already exists");
     }
 
     const newUser = await User.create({
-        fullname,
-        email,
+        fullname: fullname.trim(),
+        email: normalizedEmail,
         password,
-        username: username.toLowerCase()
-    })
+        username: normalizedUsername
+    });
 
-    const createUser = await User.findById(newUser.id).select("-password -refreshToken")
+    const createUser = await User.findById(newUser._id).select("-password -refreshToken");
 
     return res.status(201).json(new ApiResponse(201, createUser, "User created successfully"));
-})
+});
 
 const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
 
-    const { email } = req.body;
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required");
+    }
 
-    const user = await User.findOne({ email })
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-        throw new ApiError(401, "User not found")
+        throw new ApiError(401, "User not found");
     }
 
-    // await user.isPasswordCorrect(req.body.password)
-
-    // if (isPasswordCorrect != true) {
-    //     throw new ApiError(401, "Invalid password")
-    // }
-
-    const isPasswordValid = await user.isPasswordCorrect(req.body.password)
+    const isPasswordValid = await user.isPasswordCorrect(password);
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid password")
+        throw new ApiError(401, "Invalid password");
     }
 
-    const accessToken = user.generateAccessToken()
-    const refreshToken = user.generateRefreshToken()
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
 
-    user.refreshToken = refreshToken
-    await user.save()  // ✅ Database mein save karo
-
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
 
     res.status(200).json(new ApiResponse(200, {
+        user: {
+            _id: user._id,
+            fullname: user.fullname,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        },
         accessToken,
         refreshToken
-    }, "User logged in successfully"))
-})
+    }, "User logged in successfully"));
+});
 
-export { registerUser, loginUser }
+export { registerUser, loginUser };

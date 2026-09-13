@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/api/v1"
+const API_BASE_URL = "/api/v1"
 
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("accessToken")
@@ -25,19 +25,21 @@ async function loadTicketDetails(ticketId) {
     try {
         const token = localStorage.getItem("accessToken")
         
-        const response = await fetch(
-            `${API_BASE_URL}/tickets/${ticketId}`,
-            {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
+        const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             }
-        )
+        })
         
         const data = await response.json()
         
+        if (response.status === 401) {
+            logout()
+            return
+        }
+
         if (!response.ok) {
             showError(data.message || "Failed to load ticket")
             return
@@ -53,21 +55,22 @@ async function loadTicketDetails(ticketId) {
 function renderTicketDetails(ticket) {
     const container = document.getElementById("ticketDetailsContainer")
     
-    const priorityClass = getPriorityClass(ticket.priority)
-    const createdDate = new Date(ticket.createdAt).toLocaleDateString()
+    const priority = ticket.priority || ""
+    const priorityClass = getPriorityClass(priority)
+    const createdDate = ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : "N/A"
     
     const html = `
-        <div class="ticket-title">${ticket.title}</div>
+        <div class="ticket-title">${escapeHtml(ticket.title)}</div>
         
         <div class="ticket-badges">
-            <span class="badge badge-category">${ticket.category}</span>
-            <span class="badge badge-priority-${ticket.priority.toLowerCase()}">${ticket.priority}</span>
-            <span class="badge badge-status">${ticket.status}</span>
+            <span class="badge badge-category">${escapeHtml(ticket.category)}</span>
+            <span class="badge ${priorityClass}">${escapeHtml(priority)}</span>
+            <span class="badge badge-status">${escapeHtml(ticket.status)}</span>
         </div>
         
         <div class="detail-section">
             <div class="detail-label">Description</div>
-            <div class="detail-value">${ticket.description}</div>
+            <div class="detail-value" style="white-space: pre-wrap;">${escapeHtml(ticket.description)}</div>
         </div>
         
         <div class="detail-section">
@@ -85,9 +88,11 @@ function renderTicketDetails(ticket) {
 }
 
 function getPriorityClass(priority) {
-    if (priority === "Low") return "priority-low"
-    if (priority === "Medium") return "priority-medium"
-    if (priority === "High") return "priority-high"
+    const p = (priority || "").toLowerCase()
+    if (p === "low") return "badge-priority-low"
+    if (p === "medium") return "badge-priority-medium"
+    if (p === "high") return "badge-priority-high"
+    return ""
 }
 
 async function deleteTicket(ticketId) {
@@ -98,19 +103,21 @@ async function deleteTicket(ticketId) {
     try {
         const token = localStorage.getItem("accessToken")
         
-        const response = await fetch(
-            `${API_BASE_URL}/tickets/${ticketId}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
+        const response = await fetch(`${API_BASE_URL}/tickets/${ticketId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             }
-        )
+        })
         
         const data = await response.json()
         
+        if (response.status === 401) {
+            logout()
+            return
+        }
+
         if (!response.ok) {
             showError(data.message || "Failed to delete ticket")
             return
@@ -126,23 +133,35 @@ async function deleteTicket(ticketId) {
 
 function editTicket(ticketId) {
     alert("Edit feature coming soon!")
-    // Future: Implement edit page
 }
 
 function loadUserName() {
-    const userName = localStorage.getItem("userName")
-    document.getElementById("userName").textContent = userName
+    const userName = localStorage.getItem("userName") || "User"
+    const userNameEl = document.getElementById("userName")
+    if (userNameEl) {
+        userNameEl.textContent = userName
+    }
 }
 
 function logout() {
     localStorage.removeItem("accessToken")
     localStorage.removeItem("refreshToken")
     localStorage.removeItem("userName")
+    localStorage.removeItem("userRole")
     window.location.href = "login.html"
 }
 
 function showError(message) {
     const errorDiv = document.getElementById("errorMessage")
-    errorDiv.textContent = message
-    errorDiv.classList.add("show")
+    if (errorDiv) {
+        errorDiv.textContent = message
+        errorDiv.classList.add("show")
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return ""
+    const div = document.createElement("div")
+    div.textContent = text
+    return div.innerHTML
 }
